@@ -49,9 +49,26 @@ public class Reservation {
 		return TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS); // converteu de milisegundos para dias
 	}
 
-	public void updateDates(Date checkIn, Date checkOut) { //Atualizará checkIn e checkOut
+	/*
+	 *  Na questão diz que não poderá atualizar a reserva se as datas forem do passado. 
+	 *  Abaixo a solução intermediária inserida no método updateDates. A lógica já está na classe de reserva
+	 *  Porém o método só retornará a exceção em uma String e pra isso passará de Void para String
+	 *  Caso não tenha erro, retornará o aviso de nulo para informar 
+	 *  Para mostrar os avisos, criou uma variável de String que receberá o return e mostrará os avisos
+	 */
+	
+	public String updateDates(Date checkIn, Date checkOut) { //Atualizará checkIn e checkOut
+		
+		Date now = new Date();
+		if (checkIn.before(now) || checkOut.before(now)) { // se a data digitada de check-in ou check-out for antes de hoje 
+			return "Reservation dates for update must be future dates";
+		}
+		if (!checkOut.after(checkIn)) { // se a data de check-out não for depois do check-in mostrará erro
+			return "Check-out date must be after check-in date";
+		}
 		this.checkIn = checkIn;
 		this.checkOut = checkOut;
+		return null;
 	}
 	
 	/*

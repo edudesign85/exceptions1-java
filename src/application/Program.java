@@ -10,7 +10,7 @@ import model.entities.Reservation;
 
 public class Program {
 
-	public static void main(String[] args) throws ParseException {
+	public static void main(String[] args) throws ParseException { //não teria nessa segunda versão, mas deixou para fins didáticos
 
 		Scanner sc = new Scanner(System.in);
 		Locale.setDefault(Locale.US);
@@ -46,26 +46,23 @@ public class Program {
 
 			/*
 			 *  Na questão diz que não poderá atualizar a reserva se as datas forem do passado. 
-			 *  Abaixo a solução muito ruim, pois implementará a lógica no programa principal. Devia estar na própria classe Reservation
-			 *  Essa é pior versão. Tem um problema grave de delegação. Quem deve saber sobre reserva é a classe dedicada à reserva
+			 *  Abaixo a solução intermediária inserida no método updateDates. A lógica já está na classe de reserva
+			 *  Porém o método updateDates da classe só retornará a exceção em uma String e pra isso passará de Void para String
+			 *  Caso não tenha erro, retornará o aviso de nulo para informar 
+			 *  Para mostrar os avisos, foi criada abaixo a variável error, que receberá o return e mostrará os avisos
 			 */
 			
-			Date now = new Date();
-			if (checkIn.before(now) || checkOut.before(now)) { // se a data digitada de check-in ou check-out for antes de hoje 
-				System.out.println("Error in reservation: Reservation dates for update must be future");
-			}
-			
-			else if (!checkOut.after(checkIn)) { // se a data de check-out não for depois do check-in mostrará erro
-				System.out.println("Error in reservation: Check-out date must be after check-in date");
-			}
-			
+			String error = reservation.updateDates(checkIn, checkOut); // chamou o método updateDates da classe Reservation para usar no objeto reservation
+			if (error != null) {
+				System.out.println("Error in reservation: " + error);
+			}	
 			else {
-				reservation.updateDates(checkIn, checkOut); // chamou o método updateDates da classe Reservation para usar no objeto reservation
 				System.out.println("Reservation: " + reservation);
 			}
-			
 		}
-		
+			
 		sc.close();
-	}
+	}	
 }
+
+
