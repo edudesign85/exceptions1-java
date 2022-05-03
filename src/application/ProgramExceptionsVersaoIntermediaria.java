@@ -6,9 +6,9 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.Scanner;
 
-import model.entities.Reservation;
+import model.entities.ReservationIntermediaria;
 
-public class ProgramExceptions {
+public class ProgramExceptionsVersaoIntermediaria {
 
 	public static void main(String[] args) throws ParseException {
 
@@ -31,7 +31,7 @@ public class ProgramExceptions {
 			System.out.println("Error in reservation: Check-out date must be after check-in date");
 		}
 		else {
-			Reservation reservation = new Reservation(number, checkIn, checkOut); //instanciou um objeto do tipo Reservation com nome reservation
+			ReservationIntermediaria reservation = new ReservationIntermediaria(number, checkIn, checkOut); //instanciou um objeto do tipo Reservation com nome reservation
 			System.out.println("Reservation: " + reservation);
 		
 			// Abaixo a parte de atualização da reserva
@@ -46,34 +46,23 @@ public class ProgramExceptions {
 
 			/*
 			 *  Na questão diz que não poderá atualizar a reserva se as datas forem do passado. 
-			 *  Abaixo a solução muito ruim, pois implementará a lógica no programa principal. Devia estar na própria classe Reservation
-			 *  Essa é pior versão. Tem um problema grave de delegação. Quem deve saber sobre reserva é a classe dedicada à reserva
+			 *  Abaixo a solução intermediária inserida no método updateDates. A lógica já está na classe de reserva
+			 *  Porém o método updateDates da classe só retornará a exceção em uma String e pra isso passará de Void para String
+			 *  Caso não tenha erro, retornará o aviso de nulo para informar 
+			 *  Para mostrar os avisos, foi criada abaixo a variável error, que receberá o return e mostrará os avisos
 			 */
 			
-			Date now = new Date();
-			if (checkIn.before(now) || checkOut.before(now)) { // se a data digitada de check-in ou check-out for antes de hoje 
-				System.out.println("Error in reservation: Reservation dates for update must be future");
-			}
-			
-			else if (!checkOut.after(checkIn)) { // se a data de check-out não for depois do check-in mostrará erro
-				System.out.println("Error in reservation: Check-out date must be after check-in date");
-			}
-			
+			String error = reservation.updateDates(checkIn, checkOut); // chamou o método updateDates da classe Reservation para usar no objeto reservation
+			if (error != null) {
+				System.out.println("Error in reservation: " + error);
+			}	
 			else {
-				reservation.updateDates(checkIn, checkOut); // chamou o método updateDates da classe Reservation para usar no objeto reservation
 				System.out.println("Reservation: " + reservation);
 			}
-			
 		}
-		
-		
-		
-		
-		
+			
 		sc.close();
-		
-		
-
-	}
-
+	}	
 }
+
+
