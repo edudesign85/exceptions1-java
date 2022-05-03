@@ -7,32 +7,36 @@ import java.util.Locale;
 import java.util.Scanner;
 
 import model.entities.Reservation;
+import model.exceptions.DomainException;
 
 public class Program {
 
-	public static void main(String[] args) throws ParseException { //não teria nessa segunda versão, mas deixou para fins didáticos
+	public static void main(String[] args) {
 
 		Scanner sc = new Scanner(System.in);
 		Locale.setDefault(Locale.US);
 		
-		
-		// Abaixo a parte de implementação da reserva
-		
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+
+		/*
+		 *  usará tratamento de exceções com Try e catch. Em try coloca código normal supondo que não haverá erros 
+		 *  Quando ocorre exceções em try interrompe o programa e cai em catch, que tratará exceções
+		 */
 		
-		System.out.print("Room number: ");
-		int number = sc.nextInt();
-		System.out.print("Check-in date (dd/MM/yyyy): ");
-		Date checkIn = sdf.parse(sc.next());
-		System.out.print("Check-out date (dd/MM/yyyy): ");
-		Date checkOut = sdf.parse(sc.next());
-		
-		if (!checkOut.after(checkIn)) { // se a data de check-out não for depois do check-in mostrará erro
-			System.out.println("Error in reservation: Check-out date must be after check-in date");
-		}
-		else {
-			Reservation reservation = new Reservation(number, checkIn, checkOut); //instanciou um objeto do tipo Reservation com nome reservation
+		try {
+			
+			// Abaixo a parte de implementação da reserva
+			
+			System.out.print("Room number: ");
+			int number = sc.nextInt();
+			System.out.print("Check-in date (dd/MM/yyyy): ");
+			Date checkIn = sdf.parse(sc.next());
+			System.out.print("Check-out date (dd/MM/yyyy): ");
+			Date checkOut = sdf.parse(sc.next());
+	
+			Reservation reservation = new Reservation(number, checkIn, checkOut); // aqui o construtor onde instanciou um objeto do tipo Reservation com nome reservation
 			System.out.println("Reservation: " + reservation);
+			
 		
 			// Abaixo a parte de atualização da reserva
 		
@@ -42,23 +46,20 @@ public class Program {
 			checkIn = sdf.parse(sc.next()); // como essas variáveis já foram declaradas acima, não pode repetir o tipo delas, como Date
 			System.out.print("Check-out date (dd/MM/yyyy): ");
 			checkOut = sdf.parse(sc.next());
+	
+			reservation.updateDates(checkIn, checkOut); // chamou o método updateDates da classe Reservation para usar no objeto reservation
+			System.out.println("Reservation: " + reservation);
+		}
 
-
-			/*
-			 *  Na questão diz que não poderá atualizar a reserva se as datas forem do passado. 
-			 *  Abaixo a solução intermediária inserida no método updateDates. A lógica já está na classe de reserva
-			 *  Porém o método updateDates da classe só retornará a exceção em uma String e pra isso passará de Void para String
-			 *  Caso não tenha erro, retornará o aviso de nulo para informar 
-			 *  Para mostrar os avisos, foi criada abaixo a variável error, que receberá o return e mostrará os avisos
-			 */
-			
-			String error = reservation.updateDates(checkIn, checkOut); // chamou o método updateDates da classe Reservation para usar no objeto reservation
-			if (error != null) {
-				System.out.println("Error in reservation: " + error);
-			}	
-			else {
-				System.out.println("Reservation: " + reservation);
-			}
+		catch (ParseException e) { //criou uma variável para a exceção relacionada às datas recebidas
+			System.out.println("Invalid date format");
+		}
+		catch (DomainException e) { //criou uma variável para a exceção relacionada às datas recebidas
+			System.out.println("Error in reservation: " + e.getMessage());
+		}
+		
+		catch (RuntimeException e) { //para evitar que qualquer exceção inesperada possa acontecer e quebrar programa, colocará mensagem 			
+			System.out.println("Unexpected error");
 		}
 			
 		sc.close();

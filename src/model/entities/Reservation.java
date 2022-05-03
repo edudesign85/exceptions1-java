@@ -4,6 +4,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
+import model.exceptions.DomainException;
+
 public class Reservation {
 	
 	/*
@@ -17,12 +19,20 @@ public class Reservation {
 	private Date checkIn;
 	private Date checkOut;
 	
-	public Reservation() {
-		super();
-	}
-			
-	public Reservation(Integer roomNumber, Date checkIn, Date checkOut) {
-		super();
+	
+	/*
+	 * No exercício já no início onde digita os dados iniciais, com argumentos passados pelos pelo construtor, tem exceção
+	 * Construtor é o método para receber as informações iniciais dos objetos
+	 * Por isso colocará a lógica de verificação com o if e propagará (lançará) a exceção criada também no construtor
+	 * Como boa prática, colocará as exceções no início do método, antes de passar os argumentos
+	 * Essa convenção chama de programação defensiva 
+	 * A exceção será tratada no programa
+	 */
+	
+	public Reservation(Integer roomNumber, Date checkIn, Date checkOut) throws DomainException {
+		if (!checkOut.after(checkIn)) { // se a data de check-out não for depois do check-in mostrará erro (tratamento do programa)
+			throw new DomainException("Check-out date must be after check-in date"); //lançou a exceção criada e passou mensagem
+		}
 		this.roomNumber = roomNumber;
 		this.checkIn = checkIn;
 		this.checkOut = checkOut;
@@ -51,24 +61,20 @@ public class Reservation {
 
 	/*
 	 *  Na questão diz que não poderá atualizar a reserva se as datas forem do passado. 
-	 *  Abaixo a solução intermediária inserida no método updateDates. A lógica já está na classe de reserva
-	 *  Porém o método só retornará a exceção em uma String e pra isso passará de Void para String
-	 *  Caso não tenha erro, retornará o aviso de nulo para informar 
-	 *  Para mostrar os avisos, criou uma variável de String que receberá o return e mostrará os avisos
+	 *  Criou método que poderá propagar a exceção na assinatura do método e tratará com o catch no programa, se acontecer exceção
 	 */
 	
-	public String updateDates(Date checkIn, Date checkOut) { //Atualizará checkIn e checkOut
+	public void updateDates(Date checkIn, Date checkOut) throws DomainException { //Propagou a exceção
 		
 		Date now = new Date();
 		if (checkIn.before(now) || checkOut.before(now)) { // se a data digitada de check-in ou check-out for antes de hoje 
-			return "Reservation dates for update must be future dates";
+			throw new DomainException("Reservation dates for update must be future dates"); //lançou a exceção criada e passou mensagem
 		}
 		if (!checkOut.after(checkIn)) { // se a data de check-out não for depois do check-in mostrará erro
-			return "Check-out date must be after check-in date";
+			throw new DomainException("Check-out date must be after check-in date"); //lançou a exceção criada e passou mensagem
 		}
 		this.checkIn = checkIn;
 		this.checkOut = checkOut;
-		return null;
 	}
 	
 	/*
