@@ -8,7 +8,7 @@ import java.util.Scanner;
 
 import model.entities.Reservation;
 
-public class ProgramExceptions {
+public class Program {
 
 	public static void main(String[] args) throws ParseException {
 
@@ -66,14 +66,6 @@ public class ProgramExceptions {
 			
 		}
 		
-		
-		
-		
-		
 		sc.close();
-		
-		
-
 	}
-
 }
